@@ -1,109 +1,143 @@
 package dev.nonvocal.gui;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+
 import com.dscsag.plm.spi.interfaces.ECTRService;
+import com.dscsag.plm.spi.interfaces.logging.PlmLogger;
+
+import dev.nonvocal.addon.Addon;
 import dev.nonvocal.addon.AddonCollector;
 import dev.nonvocal.gui.tree.AddonBundleTreeNode;
 import dev.nonvocal.gui.tree.AddonTreeModel;
 import dev.nonvocal.gui.tree.AddonTreeNode;
-import org.osgi.service.component.annotations.Reference;
-
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreePath;
-import java.awt.*;
 
 public class MainUI extends JFrame
 {
-    @Reference
-    private ECTRService ectrService;
 
-    private AddonCollector.AddonCollection addons;
+  private ECTRService ectrService;
+  private PlmLogger logger;
 
-    public MainUI()
+  private AddonCollector.AddonCollection addons;
+
+  public MainUI(ECTRService service)
+  {
+    super("Addon-Tool");
+
+    this.ectrService = service;
+    this.logger = ectrService.getPlmLogger();
+
+    AddonCollector addonCollector = new AddonCollector(ectrService);
+    addons = addonCollector.collectAddons();
+
+    add(new MainPanel(addons));
+    setVisible(true);
+
+  }
+
+  @Override
+  public void setVisible(boolean b)
+  {
+    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    setSize(500, 500);
+    setLocationRelativeTo(null);
+    super.setVisible(true);
+  }
+
+  private static final class MainPanel extends JPanel
+  {
+    private final AddonCollector.AddonCollection addons;
+    private final NavBar navBar;
+    private final DetailPanel detailPanel;
+
+    public MainPanel(AddonCollector.AddonCollection addons)
     {
-        super("Addon-Tool");
+      this.addons = addons;
+      setLayout(new BorderLayout());
 
-        AddonCollector addonCollector = new AddonCollector(ectrService);
-        addons = addonCollector.collectAddons();
+      this.navBar = new NavBar(addons);
+      JScrollPane scrollingNavBar = new JScrollPane(navBar, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      add(scrollingNavBar, BorderLayout.WEST);
 
+      this.detailPanel = new DetailPanel();
+      JScrollPane scrollingDetailPanel = new JScrollPane(detailPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      add(scrollingDetailPanel, BorderLayout.CENTER);
+      //      add(detailPanel, BorderLayout.CENTER);
 
+      navBar.addTreeSelectionListener(new SelectionListener(detailPanel));
+    }
+  }
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 500);
-        setLocationRelativeTo(null);
-        setVisible(true);
+  private static final class NavBar extends JTree
+  {
+    private final AddonTreeModel model;
+
+    private NavBar(AddonCollector.AddonCollection addons)
+    {
+      super(new AddonTreeModel(addons));
+      this.model = (AddonTreeModel) super.getModel();
     }
 
-    private static final class MainPanel extends JPanel
+    @Override
+    public AddonTreeModel getModel()
     {
-        private final AddonCollector.AddonCollection addons;
-        private final NavBar navBar;
-        private final DetailPanel detailPanel;
+      return model;
+    }
+  }
 
-        public MainPanel(AddonCollector.AddonCollection addons)
-        {
-            this.addons = addons;
-            setLayout(new BorderLayout());
+  @SuppressWarnings ("ClassCanBeRecord")
+  private static final class SelectionListener implements TreeSelectionListener
+  {
+    private final DetailPanel detailPanel;
 
-            this.navBar = new NavBar(addons);
-            add(navBar, BorderLayout.WEST);
-
-            this.detailPanel = new DetailPanel();
-            add(detailPanel, BorderLayout.CENTER);
-
-            navBar.addTreeSelectionListener(new SelectionListener(detailPanel));
-        }
+    public SelectionListener(DetailPanel detailPanel)
+    {
+      this.detailPanel = detailPanel;
     }
 
-    private static final class NavBar extends JTree
+    @Override
+    public void valueChanged(TreeSelectionEvent e)
     {
-        private final AddonTreeModel model;
-        private NavBar(AddonCollector.AddonCollection addons)
-        {
-            super(new AddonTreeModel(addons));
-            this.model = (AddonTreeModel) super.getModel();
-        }
+      Object pathComponent = e.getNewLeadSelectionPath().getLastPathComponent();
+      if (pathComponent instanceof AddonBundleTreeNode bundleNode)
+      {
+        AddonCollector.AddonCollection.AddonBundle bundle = bundleNode.bundle();
+        SwingUtilities.invokeLater(() -> detailPanel.setHeaderText(bundle.domain()));
+      }
+      else if (pathComponent instanceof AddonTreeNode addonNode)
+      {
+        Addon addon = addonNode.addon();
+        SwingUtilities.invokeLater(() -> detailPanel.setHeaderText(addon.domain() + ":" + addon.name()));
+      }
+    }
+  }
 
-        @Override
-        public AddonTreeModel getModel()
-        {
-            return model;
-        }
+  private static final class DetailPanel extends JPanel
+  {
+    private JLabel header;
+
+    public DetailPanel()
+    {
+      super(new BorderLayout());
+      header = new JLabel("");
+      add(header, BorderLayout.NORTH);
     }
 
-    @SuppressWarnings("ClassCanBeRecord")
-    private static final class SelectionListener implements TreeSelectionListener
+    void setHeaderText(String text)
     {
-        private final DetailPanel detailPanel;
-
-        public SelectionListener(DetailPanel detailPanel)
-        {
-            this.detailPanel = detailPanel;
-        }
-
-        @Override
-        public void valueChanged(TreeSelectionEvent e)
-        {
-            TreePath[] paths = e.getPaths();
-            if (paths != null && paths.length == 1)
-            {
-                Object pathComponent = e.getPath().getLastPathComponent();
-                if (pathComponent instanceof AddonBundleTreeNode bundleNode)
-                {
-
-                }
-                else if(pathComponent instanceof AddonTreeNode addonNode)
-                {
-
-                }
-
-            }
-        }
+      header.setText("<html><h1>" + text + "</h1></html>");
+      invalidate();
+      repaint();
     }
-
-    private static final class DetailPanel extends JPanel
-    {
-
-    }
+  }
 }

@@ -20,6 +20,7 @@ public class AddonTreeModel extends DefaultTreeModel
                 .map(AddonTreeModel::createSubTree)
                 .forEach(this.root::add);
 
+        reload();
     }
 
     private static AddonBundleTreeNode createSubTree(AddonCollector.AddonCollection.AddonBundle bundle)

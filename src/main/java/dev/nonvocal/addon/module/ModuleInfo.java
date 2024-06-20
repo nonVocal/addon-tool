@@ -23,7 +23,6 @@ public class ModuleInfo
         return name;
     }
 
-
     public String version()
     {
         return version;
@@ -39,5 +38,16 @@ public class ModuleInfo
     public Collection<BackendDependency> backendDependencies()
     {
         return backendDependencies;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ModuleInfo{" +
+            "name='" + name + '\'' +
+            ", version='" + version + '\'' +
+            ", dependencies=" + dependencies +
+            ", backendDependencies=" + backendDependencies +
+            '}';
     }
 }

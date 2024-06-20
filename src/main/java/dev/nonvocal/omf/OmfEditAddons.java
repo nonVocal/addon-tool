@@ -6,6 +6,9 @@ import com.dscsag.plm.spi.interfaces.gui.PluginFunction;
 import com.dscsag.plm.spi.interfaces.gui.PluginRequest;
 import com.dscsag.plm.spi.interfaces.gui.PluginResponse;
 import com.dscsag.plm.spi.interfaces.gui.PluginResponseFactory;
+import com.dscsag.plm.spi.interfaces.logging.PlmLogger;
+
+import dev.nonvocal.gui.MainUI;
 
 public class OmfEditAddons implements PluginFunction
 {
@@ -21,6 +24,9 @@ public class OmfEditAddons implements PluginFunction
     {
         var statusline = service.getStatusLine();
         statusline.setText(PlmStatusLineMode.SUCCESS, "Called Addon Manager");
+
+        MainUI mainUI = new MainUI(service);
+
         return PluginResponseFactory.infoResponse("Yeah!");
     }
 }

@@ -1,112 +1,130 @@
 package dev.nonvocal.addon;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.nonvocal.addon.module.ModuleInfo;
-import org.eclipse.jdt.annotation.NonNull;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Stream;
+
+import org.eclipse.jdt.annotation.NonNull;
+
+import com.dscsag.plm.spi.interfaces.logging.PlmLogger;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import dev.nonvocal.addon.module.ModuleInfo;
 
 public class Addon
 {
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+  private static final ObjectMapper MAPPER = new ObjectMapper();
+  private static final String disabled = "DISABLED";
 
-    private final String domain;
-    private String name;
-    private final Collection<String> jars;
-    private final Collection<String> plugins;
-    private ModuleInfo moduleInfo;
+  private PlmLogger logger;
 
-    private final Path addonPath;
+  private final String domain;
+  private String name;
+  private final Collection<String> jars;
+  private final Collection<String> plugins;
+  private ModuleInfo moduleInfo;
 
-    private final boolean enabled;
+  private final Path addonPath;
 
-    public Addon(@NonNull Path addonPath)
+  private final boolean enabled;
+
+  public Addon(@NonNull Path addonPath, @NonNull PlmLogger logger)
+  {
+    this.logger = logger;
+    this.addonPath = addonPath;
+
+    this.enabled = Files.notExists(addonPath.resolve(disabled));
+    this.domain = addonPath.getName(addonPath.getNameCount() - 2).toString();
+
+    this.jars = new ArrayList<>();
+    this.plugins = new ArrayList<>();
+    try
+    //            (
+    //                Stream<Path> classesStream = Files.list(addonPath.resolve("classes"));
+    //                Stream<Path> pluginStream = Files.list(addonPath.resolve("plugins"));
+    //        )
     {
-        this.addonPath = addonPath;
+      //            classesStream.forEach(path -> jars.add(path.getFileName().toString()));
+      //            pluginStream.forEach(path -> plugins.add(path.getFileName().toString()));
+      if (Files.exists(addonPath.resolve("module.information")))
+      {
+        moduleInfo = MAPPER.readValue(addonPath.resolve("module.information").toFile(), ModuleInfo.class);
+        name = moduleInfo.name();
 
-        this.enabled = Files.notExists(addonPath.resolve("disabled"));
-        this.domain = addonPath.getName(addonPath.getNameCount() - 2).toString();
+        logger.debug(moduleInfo.toString());
+      }
+      else
+      {
+        name = addonPath.getFileName().toString();
 
-        this.jars = new ArrayList<>();
-        this.plugins = new ArrayList<>();
-        try (
-                Stream<Path> classesStream = Files.list(addonPath.resolve("classes"));
-                Stream<Path> pluginStream = Files.list(addonPath.resolve("plugins"));
-        )
-        {
-            classesStream.forEach(path -> jars.add(path.getFileName().toString()));
-            pluginStream.forEach(path -> plugins.add(path.getFileName().toString()));
-            if (Files.exists(addonPath.resolve("module.information")))
-            {
-                moduleInfo = MAPPER.readValue(addonPath.resolve("module.information").toFile(), ModuleInfo.class);
-                name = moduleInfo.name();
-            }
-        } catch (IOException e)
-        {
-            //
-        }
-
+        logger.debug("No module.information file available");
+      }
+    }
+    catch (IOException e)
+    {
+      logger.error(e);
     }
 
-    public String domain()
-    {
-        return domain;
-    }
+  }
 
-    public String name()
-    {
-        return name;
-    }
+  public String domain()
+  {
+    return domain;
+  }
 
-    public Collection<String> jars()
-    {
-        return jars;
-    }
+  public String name()
+  {
+    return name;
+  }
 
-    public Collection<String> plugins()
-    {
-        return plugins;
-    }
+  public Collection<String> jars()
+  {
+    return jars;
+  }
 
-    public ModuleInfo moduleInfo()
-    {
-        return moduleInfo;
-    }
+  public Collection<String> plugins()
+  {
+    return plugins;
+  }
 
-    public Path addonPath()
-    {
-        return addonPath;
-    }
+  public ModuleInfo moduleInfo()
+  {
+    return moduleInfo;
+  }
 
-    public boolean enabled()
-    {
-        return enabled;
-    }
+  public Path addonPath()
+  {
+    return addonPath;
+  }
 
-    public void enable()
-    {
-        try
-        {
-            Files.deleteIfExists(addonPath.resolve("disabled"));
-        } catch (IOException e)
-        {
-            // ignore
-        }
-    }
+  public boolean enabled()
+  {
+    return enabled;
+  }
 
-    public void disable()
+  public void enable()
+  {
+    try
     {
-        try
-        {
-            Files.createFile(addonPath.resolve("disabled"));
-        } catch (IOException e)
-        {
-            // ignore
-        }
+      Files.deleteIfExists(addonPath.resolve(disabled));
     }
+    catch (IOException e)
+    {
+      logger.error(e);
+    }
+  }
+
+  public void disable()
+  {
+    try
+    {
+      Files.createFile(addonPath.resolve(disabled));
+    }
+    catch (IOException e)
+    {
+      logger.error(e);
+    }
+  }
 }
