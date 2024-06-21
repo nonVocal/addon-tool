@@ -1,4 +1,4 @@
-DONT ESPECT ANY SUPPORT FROM ME!
+DO NOT ECPECT ANY SUPPORT FROM ME!
 
 This addon can now show all installed SAP ECTR addon.
 If you wanna use this than
