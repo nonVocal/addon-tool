@@ -5,7 +5,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import dev.nonvocal.addon.module.BackendDependency;
+import dev.nonvocal.addon.module.Dependency;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.dscsag.plm.spi.interfaces.logging.PlmLogger;
@@ -89,14 +92,33 @@ public class Addon
     return plugins;
   }
 
-  public ModuleInfo moduleInfo()
-  {
-    return moduleInfo;
-  }
-
   public Path addonPath()
   {
     return addonPath;
+  }
+
+  public String version()
+  {
+    if (moduleInfo == null)
+      return "UNKNOWN";
+
+    return moduleInfo.version();
+  }
+
+  public Collection<Dependency> dependencies()
+  {
+    if (moduleInfo == null)
+      return List.of();
+
+    return moduleInfo.dependencies();
+  }
+
+  public Collection<BackendDependency> backendDependencies()
+  {
+    if (moduleInfo == null)
+      return List.of();
+
+    return moduleInfo.backendDependencies();
   }
 
   public boolean enabled()

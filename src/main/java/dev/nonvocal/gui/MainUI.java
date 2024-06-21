@@ -27,10 +27,10 @@ import dev.nonvocal.gui.tree.AddonTreeNode;
 public class MainUI extends JFrame
 {
 
-  private ECTRService ectrService;
-  private PlmLogger logger;
+  private final ECTRService ectrService;
+  private final PlmLogger logger;
 
-  private AddonCollector.AddonCollection addons;
+  private final AddonCollector.AddonCollection addons;
 
   public MainUI(ECTRService service)
   {
@@ -212,7 +212,7 @@ public class MainUI extends JFrame
         return switch (columnIndex)
         {
           case 0 -> addon.name();
-          case 1 -> addon.moduleInfo() == null ? "" : addon.moduleInfo().version();
+          case 1 -> addon.version();
           case 2 -> addon.addonPath();
           case 3 -> addon.enabled();
           default -> null;
@@ -220,7 +220,7 @@ public class MainUI extends JFrame
       }
     }
 
-    private class AddonModel extends DefaultTableModel
+    private static class AddonModel extends DefaultTableModel
     {
       private final Addon addon;
 
@@ -276,7 +276,7 @@ public class MainUI extends JFrame
           {
             case 0 -> addon.domain();
             case 1 -> addon.name();
-            case 2 -> addon.moduleInfo() == null ? "" : addon.moduleInfo().version();
+            case 2 -> addon.version();
             case 3 -> addon.addonPath();
             case 4 -> addon.enabled();
             default -> throw new IndexOutOfBoundsException();
