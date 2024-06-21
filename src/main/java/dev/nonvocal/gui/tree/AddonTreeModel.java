@@ -18,6 +18,7 @@ public class AddonTreeModel extends DefaultTreeModel
         root = (DefaultMutableTreeNode) super.root;
 
         addons.bundles()
+                .filter(bundle -> !bundle.addons().isEmpty())
                 .map(AddonTreeModel::createSubTree)
                 .forEach(this.root::add);
 
