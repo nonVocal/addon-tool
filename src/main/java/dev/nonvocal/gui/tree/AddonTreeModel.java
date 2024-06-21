@@ -28,4 +28,11 @@ public class AddonTreeModel extends DefaultTreeModel
     {
         return new AddonBundleTreeNode(bundle);
     }
+
+    @Override
+    public DefaultMutableTreeNode getRoot()
+    {
+        return root;
+    }
+
 }
