@@ -1,15 +1,8 @@
 package dev.nonvocal.addon;
 
-import com.dscsag.plm.spi.interfaces.ECTRService;
-import com.dscsag.plm.spi.interfaces.commons.PlmEnvironment;
-import com.dscsag.plm.spi.interfaces.logging.PlmLogger;
-
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,8 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import dev.nonvocal.infrastructure.Logger;
-import lombok.extern.flogger.Flogger;
+import org.osgi.service.component.annotations.Reference;
+
+import com.dscsag.plm.spi.interfaces.ECTRService;
+import com.dscsag.plm.spi.interfaces.commons.PlmEnvironment;
+import com.dscsag.plm.spi.interfaces.logging.PlmLogger;
 
 public class AddonCollector
 {
@@ -59,10 +55,8 @@ public class AddonCollector
       collection.bundles()
           .forEach(bundle -> {
             logger.debug(bundle.domain());
-            for (Addon addon : bundle.addons)
-            {
+            for (Addon addon : bundle.addons())
               logger.debug("-> " + addon.name());
-            }
           });
     }
 
@@ -109,14 +103,6 @@ public class AddonCollector
     private void addAddon(String domain, Addon addon)
     {
       addons.computeIfAbsent(domain, k -> new ArrayList<>()).add(addon);
-    }
-
-    public record AddonBundle(String domain, Collection<Addon> addons)
-    {
-      static AddonBundle of(Map.Entry<String, Collection<Addon>> entry)
-      {
-        return new AddonBundle(entry.getKey(), entry.getValue());
-      }
     }
   }
 }

@@ -1,9 +1,10 @@
 package dev.nonvocal.gui.tree;
 
-import dev.nonvocal.addon.AddonCollector;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+
+import dev.nonvocal.addon.AddonBundle;
+import dev.nonvocal.addon.AddonCollector;
 
 ;
 
@@ -23,7 +24,7 @@ public class AddonTreeModel extends DefaultTreeModel
         reload();
     }
 
-    private static AddonBundleTreeNode createSubTree(AddonCollector.AddonCollection.AddonBundle bundle)
+    private static AddonBundleTreeNode createSubTree(AddonBundle bundle)
     {
         return new AddonBundleTreeNode(bundle);
     }

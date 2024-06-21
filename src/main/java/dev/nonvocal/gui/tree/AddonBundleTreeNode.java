@@ -2,13 +2,13 @@ package dev.nonvocal.gui.tree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import dev.nonvocal.addon.AddonCollector;
+import dev.nonvocal.addon.AddonBundle;
 
 public class AddonBundleTreeNode extends DefaultMutableTreeNode
 {
-  private final AddonCollector.AddonCollection.AddonBundle bundle;
+  private final AddonBundle bundle;
 
-  public AddonBundleTreeNode(AddonCollector.AddonCollection.AddonBundle bundle)
+  public AddonBundleTreeNode(AddonBundle bundle)
   {
     this.bundle = bundle;
     bundle.addons().stream()
@@ -22,7 +22,7 @@ public class AddonBundleTreeNode extends DefaultMutableTreeNode
     return bundle();
   }
 
-  public AddonCollector.AddonCollection.AddonBundle bundle()
+  public AddonBundle bundle()
   {
     return bundle;
   }
