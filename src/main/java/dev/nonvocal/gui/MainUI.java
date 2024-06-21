@@ -177,13 +177,19 @@ public class MainUI extends JFrame
       @Override
       public int getRowCount()
       {
+        if (bundle == null)
+          return 0;
+
         return bundle.addons().size();
       }
 
       @Override
       public int getColumnCount()
       {
-        return 5;
+        if (bundle == null)
+          return 0;
+
+        return 4;
       }
 
       @Override
@@ -191,11 +197,10 @@ public class MainUI extends JFrame
       {
         return switch (column)
         {
-          case 0 -> "Domain";
-          case 1 -> "Name";
-          case 2 -> "Version";
-          case 3 -> "Path";
-          case 4 -> "Enabled";
+          case 0 -> "Name";
+          case 1 -> "Version";
+          case 2 -> "Path";
+          case 3 -> "Enabled";
           default -> throw new IndexOutOfBoundsException();
         };
       }
@@ -206,11 +211,10 @@ public class MainUI extends JFrame
         Addon addon = bundle.addons().get(rowIndex);
         return switch (columnIndex)
         {
-          case 0 -> addon.domain();
-          case 1 -> addon.name();
-          case 2 -> addon.moduleInfo().version();
-          case 3 -> addon.addonPath();
-          case 4 -> addon.enabled();
+          case 0 -> addon.name();
+          case 1 -> addon.moduleInfo() == null ? "" : addon.moduleInfo().version();
+          case 2 -> addon.addonPath();
+          case 3 -> addon.enabled();
           default -> null;
         };
       }
@@ -228,12 +232,18 @@ public class MainUI extends JFrame
       @Override
       public int getRowCount()
       {
+        if (addon == null)
+          return 0;
+
         return 5;
       }
 
       @Override
       public int getColumnCount()
       {
+        if (addon == null)
+          return 0;
+
         return 2;
       }
 
@@ -257,7 +267,7 @@ public class MainUI extends JFrame
           {
             case 0 -> "domain";
             case 1 -> "name";
-            case 2 -> "moduleInfo().version";
+            case 2 -> "version";
             case 3 -> "addonPath";
             case 4 -> "enabled";
             default -> throw new IndexOutOfBoundsException();
@@ -266,7 +276,7 @@ public class MainUI extends JFrame
           {
             case 0 -> addon.domain();
             case 1 -> addon.name();
-            case 2 -> addon.moduleInfo().version();
+            case 2 -> addon.moduleInfo() == null ? "" : addon.moduleInfo().version();
             case 3 -> addon.addonPath();
             case 4 -> addon.enabled();
             default -> throw new IndexOutOfBoundsException();
