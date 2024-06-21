@@ -7,9 +7,13 @@ import com.dscsag.plm.spi.interfaces.gui.PlmStatusLineMode;
 import com.dscsag.plm.spi.interfaces.logging.PlmLogger;
 import com.dscsag.plm.spi.interfaces.rfc.RfcExecutor;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.formdev.flatlaf.FlatDarkLaf;
 import dev.nonvocal.gui.MainUI;
+import dev.nonvocal.infrastructure.Infra;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +51,10 @@ public class Main
 //        ModuleInfo moduleInfo = mapper.readValue(json, ModuleInfo.class);
 //        System.out.println(moduleInfo);
 
-        MainUI ui = new MainUI(new ECTRServiceMock());
+        FlatDarkLaf.setup();
+        ECTRServiceMock service = new ECTRServiceMock();
+        Infra.initInstance(service);
+        MainUI ui = new MainUI(service);
 
     }
 
@@ -152,7 +159,7 @@ public class Main
                     switch (plmStatusLineMode)
                     {
                         case PLAIN -> logger.trace(s);
-                        case SUCCESS -> logger.trace("SUCCESS: " +s);
+                        case SUCCESS -> logger.trace("SUCCESS: " + s);
                         case INFO -> logger.trace("INFO: " + s);
                         case WARNING -> logger.debug("WARNING: " + s);
                         case ERROR -> logger.error("ERROR: " + s);
@@ -231,7 +238,36 @@ public class Main
         @Override
         public ResourceAccessor getResourceAccessor()
         {
-            return null;
+            return new ResourceAccessor()
+            {
+
+                @Override
+                public ImageIcon getImageIcon(String s, IconSize iconSize)
+                {
+                    return switch (s)
+                    {
+                        case "search" ->
+                        {
+                            var img = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+                            char magnifiyingGlass = '\u2315';
+
+                            Graphics graphics = img.getGraphics();
+                            Font font = new JTextField().getFont().deriveFont(16f);
+                            graphics.setFont(font);
+//                            graphics.drawChars(new char[]{magnifiyingGlass}, 0, 1, 0, 0);
+                            graphics.drawString(String.valueOf(magnifiyingGlass), 5, 2 + font.getSize());
+                            yield new ImageIcon(img);
+                        }
+                        default -> null;
+                    };
+                }
+
+                @Override
+                public Image getImage(String s)
+                {
+                    return null;
+                }
+            };
         }
 
         @Override

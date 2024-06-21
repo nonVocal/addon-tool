@@ -8,12 +8,14 @@ import dev.nonvocal.addon.AddonCollector;
 import dev.nonvocal.gui.tree.AddonBundleTreeNode;
 import dev.nonvocal.gui.tree.AddonTreeModel;
 import dev.nonvocal.gui.tree.AddonTreeNode;
+import dev.nonvocal.gui.widget.Searchbar;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -48,7 +50,7 @@ public class MainUI extends JFrame
     {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 800);
-        setPreferredSize(new Dimension(800, 800));
+        setPreferredSize(new Dimension(800, 600));
         setLocationRelativeTo(null);
         pack();
         super.setVisible(true);
@@ -64,22 +66,48 @@ public class MainUI extends JFrame
         {
             this.addons = addons;
             setLayout(new BorderLayout());
-            setPreferredSize(new Dimension(300, 800));
-            setMinimumSize(new Dimension(300, 800));
+            setPreferredSize(new Dimension(300, 600));
+            setMinimumSize(new Dimension(300, 600));
 
             this.navBar = new NavBar(addons);
             JScrollPane scrollingNavBar = new JScrollPane(navBar, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             scrollingNavBar.setPreferredSize(navBar.getPreferredSize());
             scrollingNavBar.setMinimumSize(navBar.getMinimumSize());
-            add(scrollingNavBar, BorderLayout.WEST);
+//            add(scrollingNavBar, BorderLayout.WEST);
+
+            JPanel sidePanel = new JPanel(new BorderLayout());
+            Searchbar searchbar = new Searchbar();
+            searchbar.setMargin(new Insets(5,5,5,5));
+//            searchbar.setBorder(BorderFactory.createEmptyBorder(0, 0,10,0));
+            sidePanel.add(searchbar, BorderLayout.NORTH);
+            sidePanel.add(scrollingNavBar, BorderLayout.CENTER);
+
+            sidePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+            add(sidePanel, BorderLayout.WEST);
 
             this.detailPanel = new DetailPanel();
             JScrollPane scrollingDetailPanel = new JScrollPane(detailPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                     JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            scrollingDetailPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             add(scrollingDetailPanel, BorderLayout.CENTER);
 
             navBar.addTreeSelectionListener(new SelectionListener(detailPanel));
+
+
+//            System.out.println(Integer.toBinaryString(-33));
+//
+////            Color c = new Color(2, 20, -33);
+//            Color c = new Color(2, 20, 0b11011111);
+//            System.out.println(c.getRGB());
+//
+//            System.out.println(c.getRed());
+//            System.out.println(c.getGreen());
+//            System.out.println(c.getBlue());
+//
+//            navBar.setBackground(c);
+
         }
     }
 
@@ -90,8 +118,14 @@ public class MainUI extends JFrame
         private NavBar(AddonCollector.AddonCollection addons)
         {
             super(new AddonTreeModel(addons));
-            this.model = (AddonTreeModel) super.getModel();
+            this.setRootVisible(false);
+            this.setShowsRootHandles(true);
 
+            this.setOpaque(false);
+            this.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+
+
+            this.model = (AddonTreeModel) super.getModel();
 
             var fm = getFontMetrics(getFont());
             int widthRoot = fm.stringWidth(model.getRoot().toString());
@@ -127,7 +161,11 @@ public class MainUI extends JFrame
         @Override
         public void valueChanged(TreeSelectionEvent e)
         {
-            Object pathComponent = e.getNewLeadSelectionPath().getLastPathComponent();
+            TreePath newLeadSelectionPath = e.getNewLeadSelectionPath();
+            if (newLeadSelectionPath == null)
+                return;
+
+            Object pathComponent = newLeadSelectionPath.getLastPathComponent();
             if (pathComponent instanceof AddonBundleTreeNode bundleNode)
                 SwingUtilities.invokeLater(() -> detailPanel.updateContent(bundleNode.bundle()));
             else if (pathComponent instanceof AddonTreeNode addonNode)
@@ -342,7 +380,7 @@ public class MainUI extends JFrame
             }
 
 
-            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            return super.getTableCellRendererComponent(table, value, false, false, row, column);
         }
     }
 
@@ -373,7 +411,7 @@ public class MainUI extends JFrame
                 return jToggleButton;
             }
 
-            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            return super.getTableCellRendererComponent(table, value, false, false, row, column);
         }
     }
 }
