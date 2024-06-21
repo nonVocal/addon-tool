@@ -31,7 +31,7 @@ public class Addon
 
   private final Path addonPath;
 
-  private final boolean enabled;
+  private boolean enabled;
 
   public Addon(@NonNull Path addonPath, @NonNull PlmLogger logger)
   {
@@ -131,6 +131,7 @@ public class Addon
     try
     {
       Files.deleteIfExists(addonPath.resolve(disabled));
+      enabled = true;
     }
     catch (IOException e)
     {
@@ -143,6 +144,7 @@ public class Addon
     try
     {
       Files.createFile(addonPath.resolve(disabled));
+      enabled = false;
     }
     catch (IOException e)
     {

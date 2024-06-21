@@ -254,7 +254,6 @@ public class Main
                             Graphics graphics = img.getGraphics();
                             Font font = new JTextField().getFont().deriveFont(16f);
                             graphics.setFont(font);
-//                            graphics.drawChars(new char[]{magnifiyingGlass}, 0, 1, 0, 0);
                             graphics.drawString(String.valueOf(magnifiyingGlass), 5, 2 + font.getSize());
                             yield new ImageIcon(img);
                         }

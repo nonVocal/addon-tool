@@ -205,6 +205,22 @@ public class MainUI extends JFrame
             content.add(new JScrollPane(table), BorderLayout.CENTER);
 
             add(content, BorderLayout.CENTER);
+
+            table.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseClicked(MouseEvent e)
+                {
+                    var model = table.getModel();
+
+                    var row = table.rowAtPoint(e.getPoint());
+                    var col = table.columnAtPoint(e.getPoint());
+
+                    var comp = table.getCellRenderer(row, col).getTableCellRendererComponent(table, model.getValueAt(row, col), false, false, row, col);
+                    if (comp instanceof JToggleButton button)
+                        button.doClick();
+                }
+            });
         }
 
         void setHeaderText(String text)
@@ -361,17 +377,21 @@ public class MainUI extends JFrame
             {
                 boolean enabled = (boolean) value;
                 JToggleButton jToggleButton = new JToggleButton(enabled ? "enabled" : "disabled");
-                jToggleButton.addMouseListener(new MouseAdapter()
+                jToggleButton.addActionListener(e ->
                 {
-                    @Override
-                    public void mouseClicked(MouseEvent e)
+                    DetailPanel.AddonModel model = (DetailPanel.AddonModel) table.getModel();
+                    Addon addon = model.addon;
+                    if (addon.enabled())
                     {
-                        DetailPanel.AddonModel model = (DetailPanel.AddonModel) table.getModel();
-                        Addon addon = model.addon;
-                        if (addon.enabled())
-                            addon.disable();
-                        else
-                            addon.enable();
+                        addon.disable();
+                        jToggleButton.setText("disabled");
+                        model.fireTableDataChanged();
+                    }
+                    else
+                    {
+                        addon.enable();
+                        jToggleButton.setText("enabled");
+                        model.fireTableDataChanged();
                     }
                 });
 
@@ -395,16 +415,20 @@ public class MainUI extends JFrame
 
                 boolean enabled = (boolean) value;
                 JToggleButton jToggleButton = new JToggleButton(enabled ? "enabled" : "disabled");
-                jToggleButton.addMouseListener(new MouseAdapter()
+                jToggleButton.addActionListener(e ->
                 {
-                    @Override
-                    public void mouseClicked(MouseEvent e)
+                    Addon addon = model.bundle.addons().get(row);
+                    if (addon.enabled())
                     {
-                        Addon addon = model.bundle.addons().get(row);
-                        if (addon.enabled())
-                            addon.disable();
-                        else
-                            addon.enable();
+                        addon.disable();
+                        jToggleButton.setText("disabled");
+                        model.fireTableDataChanged();
+                    }
+                    else
+                    {
+                        addon.enable();
+                        jToggleButton.setText("enabled");
+                        model.fireTableDataChanged();
                     }
                 });
 
