@@ -29,13 +29,9 @@ public class AddonCollector
     PlmEnvironment environment = ectrService.getEnvironment();
     Map<String, String> scriptEnvironment = environment.getScriptEnvironment();
 
-    //        logger = ectrService.getPlmLogger();
-    var mlogger = ectrService.getPlmLogger();
-
     instDir = scriptEnvironment.get("system.start.instdir");
 
-    //        logger.debug(instDir);
-    mlogger.debug(instDir);
+    logger.debug(instDir);
 
     installationDirectory = Path.of(instDir);
   }
@@ -69,7 +65,6 @@ public class AddonCollector
     try (Stream<Path> stream = Files.list(domainPath))
     {
       return stream
-          //                    .map(Addon::new)
           .map(p -> new Addon(p, logger))
           .toList();
     }

@@ -136,7 +136,7 @@ public class Main
                 @Override
                 public Map<String, String> getScriptEnvironment()
                 {
-                    return Map.of("system.start.instdir", "");
+                    return Map.of("system.start.instdir", Paths.get("c:", "users", "benda", "documents", "test", "addon-tool").toAbsolutePath().toString());
                 }
             };
         }
