@@ -1,6 +1,6 @@
 DO NOT ECPECT ANY SUPPORT FROM ME!
 
-This addon can now show all installed SAP ECTR addon.
+This addon can show all installed SAP ECTR addon and enable/disable individual addons.
 If you wanna use this than
  - clone
  - build
