@@ -11,12 +11,15 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import dev.nonvocal.gui.MainUI;
 import dev.nonvocal.infrastructure.Infra;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Main
 {
@@ -256,6 +259,21 @@ public class Main
                             graphics.setFont(font);
                             graphics.drawString(String.valueOf(magnifiyingGlass), 5, 2 + font.getSize());
                             yield new ImageIcon(img);
+                        }
+                        case "addons.changeRecord" -> {
+                            BufferedImage i = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
+
+                            try
+                            {
+                                var image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/addons.change-record.png")));
+                                var scaled = image.getScaledInstance(32,32, Image.SCALE_SMOOTH);
+                                yield  new ImageIcon(scaled);
+                            }
+                            catch (IOException e)
+                            {
+                                getPlmLogger().error(e.getMessage());
+                                yield null;
+                            }
                         }
                         default -> null;
                     };

@@ -23,14 +23,13 @@ public class AddonTableCellRenderer extends DefaultTableCellRenderer
                 {
                     addon.disable();
                     jToggleButton.setText("disabled");
-                    model.fireTableDataChanged();
                 }
                 else
                 {
                     addon.enable();
                     jToggleButton.setText("enabled");
-                    model.fireTableDataChanged();
                 }
+                model.fireTableDataChanged();
             });
 
 

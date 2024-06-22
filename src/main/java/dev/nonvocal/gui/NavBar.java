@@ -1,9 +1,12 @@
 package dev.nonvocal.gui;
 
+import com.dscsag.plm.spi.interfaces.commons.ResourceAccessor;
 import dev.nonvocal.addon.AddonCollector;
 import dev.nonvocal.gui.tree.AddonTreeModel;
+import org.eclipse.jdt.annotation.NonNull;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicTreeUI;
 import java.awt.*;
 import java.util.OptionalInt;
 
@@ -11,7 +14,7 @@ public class NavBar extends JTree
 {
     private final AddonTreeModel model;
 
-    public NavBar(AddonCollector.AddonCollection addons)
+    public NavBar(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
     {
         super(new AddonTreeModel(addons));
         this.setRootVisible(false);
@@ -19,7 +22,7 @@ public class NavBar extends JTree
 
         this.setOpaque(false);
         this.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-
+        this.setCellRenderer(new NavBarRenderer(resourceAccessor));
 
         this.model = (AddonTreeModel) super.getModel();
 
@@ -31,10 +34,12 @@ public class NavBar extends JTree
                 .mapToInt(a -> fm.stringWidth(a.domain() + a.name()))
                 .max();
 
-        int maxLength = widthRoot + max.getAsInt();
-
-        setMinimumSize(new Dimension(maxLength, 100));
-        setPreferredSize(new Dimension(maxLength, 100));
+        max.ifPresent(maxStringWidth ->
+        {
+            int maxLength = widthRoot + maxStringWidth;
+            setMinimumSize(new Dimension(maxLength, 100));
+            setPreferredSize(new Dimension(maxLength, 100));
+        });
     }
 
     @Override

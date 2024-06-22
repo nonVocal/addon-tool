@@ -1,11 +1,13 @@
 package dev.nonvocal.gui;
 
 import com.dscsag.plm.spi.interfaces.ECTRService;
+import com.dscsag.plm.spi.interfaces.commons.ResourceAccessor;
 import com.dscsag.plm.spi.interfaces.logging.PlmLogger;
 import dev.nonvocal.addon.AddonCollector;
 import dev.nonvocal.gui.tree.AddonBundleTreeNode;
 import dev.nonvocal.gui.tree.AddonTreeNode;
 import dev.nonvocal.gui.widget.Searchbar;
+import org.eclipse.jdt.annotation.NonNull;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -31,7 +33,7 @@ public class MainUI extends JFrame
         AddonCollector addonCollector = new AddonCollector(ectrService);
         addons = addonCollector.collectAddons();
 
-        add(new MainPanel(addons));
+        add(new MainPanel(addons, service.getResourceAccessor()));
         setVisible(true);
 
     }
@@ -53,14 +55,14 @@ public class MainUI extends JFrame
         private final NavBar navBar;
         private final DetailPanel detailPanel;
 
-        public MainPanel(AddonCollector.AddonCollection addons)
+        public MainPanel(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
         {
             this.addons = addons;
             setLayout(new BorderLayout());
             setPreferredSize(new Dimension(300, 600));
             setMinimumSize(new Dimension(300, 600));
 
-            this.navBar = new NavBar(addons);
+            this.navBar = new NavBar(addons, resourceAccessor);
             JScrollPane scrollingNavBar = new JScrollPane(navBar, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             scrollingNavBar.setPreferredSize(navBar.getPreferredSize());
