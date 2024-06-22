@@ -2,7 +2,7 @@
 
 ######  This addon can show all installed SAP ECTR addon and enable/disable individual addons.
 
-If you wanna use this than
+If you wanna use this then
  - clone
  - build
  - place it under <ECTR_INST_DIR>\customize\plugins or add a new addon under <ECTR_INST_IDR>\addons\\<YOUR_CHOSEN_DIR_NAME>
