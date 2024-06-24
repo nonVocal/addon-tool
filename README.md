@@ -1,4 +1,4 @@
-###  DO NOT ECPECT ANY SUPPORT FROM ME! 
+###  DO NOT EXPECT ANY SUPPORT FROM ME! 
 
 ######  This addon can show all installed SAP ECTR addon and enable/disable individual addons.
 
