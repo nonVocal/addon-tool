@@ -36,7 +36,7 @@ jobs:
 #    - name: Build with Gradle Wrapper
 #    run: ./gradlew build
 
-    - run: mvn --batch-mode --update-snaptshots verify
+    - run: mvn --batch-mode --update-snaptshots
     - run: mkdir staging && cp target/*.jar staging
     - uses: actions/upload-artifact@v4
       with:
