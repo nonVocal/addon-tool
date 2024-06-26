@@ -80,6 +80,12 @@
 <!--            <artifactId>flatlaf</artifactId>-->
 <!--            <version>3.4.1</version>-->
 <!--        </dependency>-->
+        <!-- for Mark down -->
+        <dependency>
+            <groupId>org.commonmark</groupId>
+            <artifactId>commonmark</artifactId>
+            <version>0.22.0</version>
+        </dependency>
     </dependencies>
 
 <!--    <profiles>-->

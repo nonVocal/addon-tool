@@ -9,13 +9,16 @@ import com.dscsag.plm.spi.interfaces.rfc.RfcExecutor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.formdev.flatlaf.FlatDarkLaf;
 import dev.nonvocal.gui.MainUI;
+import dev.nonvocal.gui.widget.MarkdownPanel;
 import dev.nonvocal.infrastructure.Infra;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +61,30 @@ public class Main
         ECTRServiceMock service = new ECTRServiceMock();
         Infra.initInstance(service);
         MainUI ui = new MainUI(service);
+
+//        String md = """
+//                ######  This addon can show all installed SAP ECTR addons and enable/disable individual addons.
+//
+//                If you wanna use this then
+//                 - clone
+//                 - build
+//                 - add a new addon under <ECTR_INST_IDR>\\addons\\\\<YOUR_CHOSEN_DIR_NAME>
+//                   - *NOTE:* I don't explain what folder structure you need. You pretend to be a big boy, then solve this yourself.
+//                 - Add the OMF fnc.edit.addons
+//                   - *NOTE:* Be brave and ask your Admin to explain this to you.
+//                   - *NOTE2:* Hopefully for you, your admins don't have ANY sharp or heavy stuff in arms reach.
+//                 \s
+//                After you successfully installed this addon you just simply need to call fnc.edit.addons
+//
+//                """;
+//            MarkdownPanel mdpanel = new MarkdownPanel();
+//            mdpanel.setMarkdown(md);
+//
+//            var frame = new JFrame();
+//            frame.setSize(500,550);
+//            frame.add(mdpanel);
+//            frame.setVisible(true);
+
 
     }
 
