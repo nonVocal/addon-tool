@@ -5,6 +5,7 @@ import dev.nonvocal.addon.Addon;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.io.IOException;
 
 public class AddonTableCellRenderer extends DefaultTableCellRenderer
 {
@@ -34,6 +35,24 @@ public class AddonTableCellRenderer extends DefaultTableCellRenderer
 
             });
 
+
+            return jToggleButton;
+        }
+        else if (column == 1 && row == 5)
+        {
+            JToggleButton jToggleButton = new JToggleButton("config");
+            jToggleButton.addActionListener(e ->
+            {
+                AddonModel model = (AddonModel) table.getModel();
+                Addon addon = model.addon();
+                try
+                {
+                    addon.openConfig();
+                } catch (IOException ex)
+                {
+                    throw new RuntimeException(ex);
+                }
+            });
 
             return jToggleButton;
         }

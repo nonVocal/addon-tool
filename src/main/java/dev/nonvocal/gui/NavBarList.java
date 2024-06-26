@@ -25,8 +25,8 @@ public class NavBarList extends JPanel
     private Consumer<Addon> onAddon;
     private Consumer<AddonBundle> onBundle;
 
-    private Map<String, AddonBundle> bundles;
-    private MouseSelectionListener selectionListener = new MouseSelectionListener();
+    private final Map<String, AddonBundle> bundles;
+    private final MouseSelectionListener selectionListener = new MouseSelectionListener();
     //    private final AddonCollector.AddonCollection addons;
     private final AddonCollection addons;
 

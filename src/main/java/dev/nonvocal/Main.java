@@ -203,7 +203,11 @@ public class Main
                 @Override
                 public String stringValue(String s, String s1, String... strings)
                 {
-                    return "";
+                    return switch (s1)
+                    {
+                        case "config.edit.application" -> "code";
+                        default -> "";
+                    };
                 }
 
                 @Override

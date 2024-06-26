@@ -24,7 +24,7 @@ public class AddonModel extends DefaultTableModel
         if (addon == null)
             return 0;
 
-        return 5;
+        return 6;
     }
 
     @Override
@@ -59,6 +59,7 @@ public class AddonModel extends DefaultTableModel
                 case 2 -> "version";
                 case 3 -> "addonPath";
                 case 4 -> "enabled";
+                case 5 -> "config";
                 default -> throw new IndexOutOfBoundsException();
             };
             case 1 -> switch (rowIndex)
@@ -68,6 +69,7 @@ public class AddonModel extends DefaultTableModel
                 case 2 -> addon.version();
                 case 3 -> addon.addonPath();
                 case 4 -> addon.enabled();
+                case 5 -> "config";
                 default -> throw new IndexOutOfBoundsException();
             };
             default -> throw new IndexOutOfBoundsException();

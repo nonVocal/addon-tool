@@ -12,7 +12,7 @@ import dev.nonvocal.gui.MainUI;
 
 public class OmfEditAddons implements PluginFunction
 {
-    ECTRService service;
+    private final ECTRService service;
 
     public OmfEditAddons(ECTRService service)
     {

@@ -6,22 +6,29 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Stream;
 
+import com.dscsag.plm.spi.interfaces.commons.PlmPreferences;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.dscsag.plm.spi.interfaces.ECTRService;
 import com.dscsag.plm.spi.interfaces.commons.PlmEnvironment;
 import com.dscsag.plm.spi.interfaces.logging.PlmLogger;
 
+@Component
 public class AddonCollector
 {
   private final PlmLogger logger;
+  private final PlmPreferences preferences;
 
   private final String instDir;
   private final Path installationDirectory;
 
+  @Activate
   public AddonCollector(@Reference ECTRService ectrService)
   {
     this.logger = ectrService.getPlmLogger();
+    this.preferences = ectrService.getPlmPreferences();
     PlmEnvironment environment = ectrService.getEnvironment();
     Map<String, String> scriptEnvironment = environment.getScriptEnvironment();
 
@@ -64,7 +71,7 @@ public class AddonCollector
     try (Stream<Path> stream = Files.list(domainPath))
     {
       return stream
-          .map(p -> new Addon(p, logger))
+          .map(p -> new Addon(p, logger, preferences))
           .toList();
     }
     catch (IOException e)

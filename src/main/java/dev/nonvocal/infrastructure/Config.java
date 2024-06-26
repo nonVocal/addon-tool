@@ -11,6 +11,9 @@ import com.dscsag.plm.spi.interfaces.commons.PlmPreferences;
 @Component (service = Config.class)
 public class Config
 {
+  public static final String PREF_NAMESPACE = "dev.nonvocal.addon.tool";
+
+
   private final PlmPreferences plmPrefs;
 
   @Activate

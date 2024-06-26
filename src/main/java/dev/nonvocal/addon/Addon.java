@@ -1,13 +1,16 @@
 package dev.nonvocal.addon;
 
+import com.dscsag.plm.spi.interfaces.commons.PlmPreferences;
 import com.dscsag.plm.spi.interfaces.logging.PlmLogger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.nonvocal.addon.module.BackendDependency;
 import dev.nonvocal.addon.module.Dependency;
 import dev.nonvocal.addon.module.ModuleInfo;
 import dev.nonvocal.gui.AddonEnableListener;
+import dev.nonvocal.infrastructure.Config;
 import org.eclipse.jdt.annotation.NonNull;
 
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,6 +24,7 @@ public class Addon
     private static final String disabled = "DISABLED";
 
     private PlmLogger logger;
+    private PlmPreferences preferences;
 
     private final String domain;
     private String name;
@@ -34,10 +38,11 @@ public class Addon
 
     private List<AddonEnableListener> enableListeners = new ArrayList<>();
 
-    public Addon(@NonNull Path addonPath, @NonNull PlmLogger logger)
+    public Addon(@NonNull Path addonPath, @NonNull PlmLogger logger, @NonNull PlmPreferences preferences)
     {
-        this.logger = logger;
         this.addonPath = addonPath;
+        this.logger = logger;
+        this.preferences = preferences;
 
         this.enabled = Files.notExists(addonPath.resolve(disabled));
         this.domain = addonPath.getName(addonPath.getNameCount() - 2).toString();
@@ -174,5 +179,17 @@ public class Addon
     public void removeEnableListener(AddonEnableListener listener)
     {
         enableListeners.remove(listener);
+    }
+
+    public void openConfig() throws IOException
+    {
+        var editApp = preferences.stringValue(Config.PREF_NAMESPACE, "config.edit.application");
+        if (editApp == null || editApp.isEmpty())
+            Desktop.getDesktop().browse(addonPath.toUri());
+        else
+        {
+            ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/C", editApp, addonPath.toString());
+            processBuilder.start();
+        }
     }
 }
