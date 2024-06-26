@@ -1,20 +1,21 @@
 package dev.nonvocal.gui;
 
 import com.dscsag.plm.spi.interfaces.commons.ResourceAccessor;
+import dev.nonvocal.addon.AddonCollection;
 import dev.nonvocal.addon.AddonCollector;
 import dev.nonvocal.gui.tree.AddonTreeModel;
 import org.eclipse.jdt.annotation.NonNull;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicTreeUI;
 import java.awt.*;
 import java.util.OptionalInt;
 
-public class NavBar extends JTree
+public class NavBarTree extends JTree
 {
     private final AddonTreeModel model;
 
-    public NavBar(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
+//    public NavBarTree(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
+    public NavBarTree(AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
     {
         super(new AddonTreeModel(addons));
         this.setRootVisible(false);

@@ -1,38 +1,25 @@
 package dev.nonvocal;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
+import com.dscsag.plm.spi.interfaces.ECTRService;
+import com.dscsag.plm.spi.interfaces.commons.*;
+import com.dscsag.plm.spi.interfaces.gui.PlmStatusLine;
+import com.dscsag.plm.spi.interfaces.gui.PlmStatusLineMode;
+import com.dscsag.plm.spi.interfaces.logging.PlmLogger;
+import com.dscsag.plm.spi.interfaces.rfc.RfcExecutor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.formdev.flatlaf.FlatDarkLaf;
+import dev.nonvocal.gui.MainUI;
+import dev.nonvocal.infrastructure.Infra;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JTextField;
-
-import com.dscsag.plm.spi.interfaces.ECTRService;
-import com.dscsag.plm.spi.interfaces.commons.PlmCacheController;
-import com.dscsag.plm.spi.interfaces.commons.PlmDictionary;
-import com.dscsag.plm.spi.interfaces.commons.PlmEnvironment;
-import com.dscsag.plm.spi.interfaces.commons.PlmLogonData;
-import com.dscsag.plm.spi.interfaces.commons.PlmPreference;
-import com.dscsag.plm.spi.interfaces.commons.PlmPreferences;
-import com.dscsag.plm.spi.interfaces.commons.ResourceAccessor;
-import com.dscsag.plm.spi.interfaces.commons.ThumbnailAccessor;
-import com.dscsag.plm.spi.interfaces.gui.PlmStatusLine;
-import com.dscsag.plm.spi.interfaces.gui.PlmStatusLineMode;
-import com.dscsag.plm.spi.interfaces.logging.PlmLogger;
-import com.dscsag.plm.spi.interfaces.rfc.RfcExecutor;
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import dev.nonvocal.gui.MainUI;
-import dev.nonvocal.infrastructure.Infra;
 
 public class Main
 {
@@ -67,7 +54,7 @@ public class Main
 //        ModuleInfo moduleInfo = mapper.readValue(json, ModuleInfo.class);
 //        System.out.println(moduleInfo);
 
-        //        FlatDarkLaf.setup();
+        FlatDarkLaf.setup();
         ECTRServiceMock service = new ECTRServiceMock();
         Infra.initInstance(service);
         MainUI ui = new MainUI(service);
@@ -273,16 +260,31 @@ public class Main
                             graphics.drawString(String.valueOf(magnifiyingGlass), 5, 2 + font.getSize());
                             yield new ImageIcon(img);
                         }
-                        case "addons.changeRecord" -> {
+                        case "addons.changeRecord" ->
+                        {
                             BufferedImage i = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
 
                             try
                             {
                                 var image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/addons.change-record.png")));
-                                var scaled = image.getScaledInstance(32,32, Image.SCALE_SMOOTH);
-                                yield  new ImageIcon(scaled);
+                                var scaled = image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+                                yield new ImageIcon(scaled);
+                            } catch (IOException e)
+                            {
+                                getPlmLogger().error(e.getMessage());
+                                yield null;
                             }
-                            catch (IOException e)
+                        }
+                        case "addons.ECTR" ->
+                        {
+                            BufferedImage i = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
+
+                            try
+                            {
+                                var image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/reverse-engineering.png")));
+                                var scaled = image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+                                yield new ImageIcon(scaled);
+                            } catch (IOException e)
                             {
                                 getPlmLogger().error(e.getMessage());
                                 yield null;

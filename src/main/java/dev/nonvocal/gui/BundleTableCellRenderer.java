@@ -21,16 +21,16 @@ public class BundleTableCellRenderer extends DefaultTableCellRenderer
             {
                 Addon addon = model.bundle().addons().get(row);
                 if (addon.enabled())
-                {
                     addon.disable();
-                    jToggleButton.setText("disabled");
-                }
                 else
-                {
                     addon.enable();
-                    jToggleButton.setText("enabled");
-                }
                 model.fireTableDataChanged();
+            });
+
+            Addon addon = model.bundle().addons().get(row);
+            addon.addEnableListener(e -> {
+                jToggleButton.setText(addon.enabled() ? "enabled" : "disabled");
+                table.repaint();
             });
 
             return jToggleButton;

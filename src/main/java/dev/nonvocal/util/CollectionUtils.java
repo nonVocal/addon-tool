@@ -50,4 +50,14 @@ public class CollectionUtils
     Class<?> myClass = collection.getClass();
     return myClass == CLASS_ABSTRACT_IMMUTABLE_LIST || myClass == CLASS_UNMODIFIABLE_LIST || myClass == CLASS_UNMODIFIABLE_RANDOM_LIST;
   }
+
+  public static boolean hasItems(Collection<?> collection)
+  {
+    return collection != null && !collection.isEmpty();
+  }
+
+  public static boolean hasNoItems(Collection<?> collection)
+  {
+      return collection == null || collection.isEmpty();
+  }
 }

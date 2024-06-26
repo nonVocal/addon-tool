@@ -3,11 +3,7 @@ package dev.nonvocal.addon;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Reference;
@@ -42,8 +38,11 @@ public class AddonCollector
     Collection<Addon> applications = collectionAddons("applications");
 
     AddonCollection collection = new AddonCollection();
-    collection.addons.put("addons", addons);
-    collection.addons.put("application", applications);
+//    collection.addons.put("addons", addons);
+//    collection.addons.put("application", applications);
+
+    addons.forEach(addon -> collection.addAddon("addons", addon));
+    applications.forEach(addon -> collection.addAddon("applications", addon));
 
     if (logger.isDebug())
     {
@@ -75,29 +74,29 @@ public class AddonCollector
     }
   }
 
-  public static class AddonCollection
-  {
-    private final Map<String, Collection<Addon>> addons = new HashMap<>();
-
-    public Collection<Addon> get(String domain)
-    {
-      return addons.getOrDefault(domain, List.of());
-    }
-
-    public Collection<String> domains()
-    {
-      return addons.keySet();
-    }
-
-    public Stream<AddonBundle> bundles()
-    {
-      return addons.entrySet().stream()
-          .map(AddonBundle::of);
-    }
-
-    private void addAddon(String domain, Addon addon)
-    {
-      addons.computeIfAbsent(domain, k -> new ArrayList<>()).add(addon);
-    }
-  }
+//  public static class AddonCollection
+//  {
+//    private final Map<String, Collection<Addon>> addons = new HashMap<>();
+//
+//    public Collection<Addon> get(String domain)
+//    {
+//      return addons.getOrDefault(domain, List.of());
+//    }
+//
+//    public Collection<String> domains()
+//    {
+//      return addons.keySet();
+//    }
+//
+//    public Stream<AddonBundle> bundles()
+//    {
+//      return addons.entrySet().stream()
+//          .map(AddonBundle::of);
+//    }
+//
+//    private void addAddon(String domain, Addon addon)
+//    {
+//      addons.computeIfAbsent(domain, k -> new ArrayList<>()).add(addon);
+//    }
+//  }
 }

@@ -3,6 +3,7 @@ package dev.nonvocal.gui;
 import com.dscsag.plm.spi.interfaces.ECTRService;
 import com.dscsag.plm.spi.interfaces.commons.ResourceAccessor;
 import com.dscsag.plm.spi.interfaces.logging.PlmLogger;
+import dev.nonvocal.addon.AddonCollection;
 import dev.nonvocal.addon.AddonCollector;
 import dev.nonvocal.gui.tree.AddonBundleTreeNode;
 import dev.nonvocal.gui.tree.AddonTreeNode;
@@ -10,6 +11,8 @@ import dev.nonvocal.gui.widget.Searchbar;
 import org.eclipse.jdt.annotation.NonNull;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
@@ -21,7 +24,8 @@ public class MainUI extends JFrame
     private final ECTRService ectrService;
     private final PlmLogger logger;
 
-    private final AddonCollector.AddonCollection addons;
+    //    private final AddonCollector.AddonCollection addons;
+    private final AddonCollection addons;
 
     public MainUI(ECTRService service)
     {
@@ -51,18 +55,22 @@ public class MainUI extends JFrame
 
     private static final class MainPanel extends JPanel
     {
-        private final AddonCollector.AddonCollection addons;
-        private final NavBar navBar;
+        //        private final AddonCollector.AddonCollection addons;
+        private final AddonCollection addons;
+        //        private final NavBar navBar;
+        private final NavBarList navBar;
         private final DetailPanel detailPanel;
 
-        public MainPanel(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
+        //        public MainPanel(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
+        public MainPanel(AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
         {
             this.addons = addons;
             setLayout(new BorderLayout());
             setPreferredSize(new Dimension(300, 600));
             setMinimumSize(new Dimension(300, 600));
 
-            this.navBar = new NavBar(addons, resourceAccessor);
+//            this.navBar = new NavBar(addons, resourceAccessor);
+            this.navBar = new NavBarList(addons, resourceAccessor);
             JScrollPane scrollingNavBar = new JScrollPane(navBar, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             scrollingNavBar.setPreferredSize(navBar.getPreferredSize());
@@ -84,8 +92,40 @@ public class MainUI extends JFrame
             scrollingDetailPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             add(scrollingDetailPanel, BorderLayout.CENTER);
 
-            navBar.addTreeSelectionListener(new SelectionListener(detailPanel));
+//            navBar.addTreeSelectionListener(new SelectionListener(detailPanel));
+            navBar.addSelectAddon(addon -> SwingUtilities.invokeLater(() -> detailPanel.updateContent(addon)));
+            navBar.addSelectBundle(bundle -> SwingUtilities.invokeLater(() -> detailPanel.updateContent(bundle)));
 
+
+            searchbar.getDocument().addDocumentListener(new DocumentListener()
+            {
+                @Override
+                public void insertUpdate(DocumentEvent e)
+                {
+                    doIt();
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e)
+                {
+                    doIt();
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e)
+                {
+                    doIt();
+                }
+
+                void doIt()
+                {
+                    String searchText = searchbar.getText();
+                    if (searchText.isEmpty())
+                        navBar.filter("");
+                    else
+                        navBar.filter(searchText);
+                }
+            });
 
 //            System.out.println(Integer.toBinaryString(-33));
 //

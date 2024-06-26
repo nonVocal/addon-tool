@@ -4,6 +4,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import dev.nonvocal.addon.AddonBundle;
+import dev.nonvocal.addon.AddonCollection;
 import dev.nonvocal.addon.AddonCollector;
 
 ;
@@ -12,7 +13,8 @@ public class AddonTreeModel extends DefaultTreeModel
 {
     private final DefaultMutableTreeNode root;
 
-    public AddonTreeModel(AddonCollector.AddonCollection addons)
+//    public AddonTreeModel(AddonCollector.AddonCollection addons)
+    public AddonTreeModel(AddonCollection addons)
     {
         super(new DefaultMutableTreeNode("Addons"));
         root = (DefaultMutableTreeNode) super.root;

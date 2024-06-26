@@ -44,7 +44,7 @@ public class AddonCollection
         .map(AddonBundle::of);
   }
 
-  private void addAddon(String domain, Addon addon)
+  public void addAddon(String domain, Addon addon)
   {
     addons.computeIfAbsent(domain, k -> new ArrayList<>()).add(addon);
   }

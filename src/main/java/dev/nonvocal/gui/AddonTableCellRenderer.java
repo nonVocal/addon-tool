@@ -20,16 +20,18 @@ public class AddonTableCellRenderer extends DefaultTableCellRenderer
                 AddonModel model = (AddonModel) table.getModel();
                 Addon addon = model.addon();
                 if (addon.enabled())
-                {
                     addon.disable();
-                    jToggleButton.setText("disabled");
-                }
                 else
-                {
                     addon.enable();
-                    jToggleButton.setText("enabled");
-                }
                 model.fireTableDataChanged();
+            });
+
+            AddonModel model = (AddonModel) table.getModel();
+            Addon addon = model.addon();
+            addon.addEnableListener(e -> {
+                jToggleButton.setText(addon.enabled() ? "enabled" : "disabled");
+                table.repaint();
+
             });
 
 

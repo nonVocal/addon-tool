@@ -1,7 +1,6 @@
 package dev.nonvocal.gui;
 
 import com.dscsag.plm.spi.interfaces.commons.ResourceAccessor;
-import dev.nonvocal.addon.Addon;
 import dev.nonvocal.gui.tree.AddonTreeNode;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -43,60 +42,6 @@ public class NavBarRenderer extends DefaultTreeCellRenderer
         if (!(value instanceof AddonTreeNode addonNode))
             return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
-        return new AddonCell(resourceAccessor, addonNode.addon());
+        return new AddonNavBarWidget(resourceAccessor, addonNode.addon());
     }
-
-    private static final class AddonCell extends JPanel
-    {
-        private final ResourceAccessor resourceAccessor;
-        private final Addon addon;
-
-        private final ImageIcon icon;
-
-        private AddonCell(ResourceAccessor resourceAccessor, Addon addon)
-        {
-            this.resourceAccessor = resourceAccessor;
-            this.addon = addon;
-
-            this.icon = resourceAccessor.getImageIcon(addon.domain() + "." + addon.name(), ResourceAccessor.IconSize.LARGE);
-
-            setLayout(new GridBagLayout());
-
-            GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 2, 0.2, 1,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(5, 5, 5, 5), 0, 0);
-
-            add(new JLabel(icon, JLabel.CENTER), gbc);
-
-            gbc.gridx = 1;
-            gbc.gridy = 0;
-            gbc.gridheight = 1;
-            gbc.gridwidth = 3;
-            gbc.weightx = 0.7;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.anchor = GridBagConstraints.WEST;
-
-            add(new JLabel(addon.name()), gbc);
-
-            JLabel labelVersion = new JLabel(addon.version() + " " + addon.domain());
-            labelVersion.setForeground(UIManager.getColor("Label.disabledForeground"));
-
-            gbc.gridy = 1;
-
-            add(labelVersion, gbc);
-
-            gbc.gridx = 5;
-            gbc.gridy = 0;
-            gbc.gridheight = 1;
-            gbc.gridwidth = 1;
-            gbc.weightx = 0.1;
-
-            JCheckBox checkBox = new JCheckBox();
-            checkBox.setSelected(addon.enabled());
-
-            add(checkBox, gbc);
-        }
-    }
-
-
 }
