@@ -39,3 +39,6 @@ build/
 
 ### Jars ###
 *.jar
+
+### cody ###
+**/cody_history.xml
