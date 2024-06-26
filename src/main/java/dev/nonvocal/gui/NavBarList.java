@@ -58,11 +58,19 @@ public class NavBarList extends JPanel
         }
 
         addMouseListener(selectionListener);
+
     }
 
     public void addSelectAddon(Consumer<Addon> r)
     {
         this.onAddon = r;
+
+        Component first = getComponent(0);
+        selectionListener.setSelectedColors(first);
+        selectionListener.selected = first;
+
+        AddonNavBarWidget widget = (AddonNavBarWidget) first;
+        onAddon.accept(widget.addon());
     }
 
     public void addSelectBundle(Consumer<AddonBundle> r)
