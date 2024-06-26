@@ -1,0 +1,10 @@
+{
+    "namespace" : "dev.nonvocal.addon.tool",
+    "preferences" : [
+        {
+            "name" : "config.edit.application",
+            "type" : "string",
+            "description" : "Application to edit"
+        }
+    ]
+}
