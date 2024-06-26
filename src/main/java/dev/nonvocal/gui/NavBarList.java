@@ -4,7 +4,6 @@ import com.dscsag.plm.spi.interfaces.commons.ResourceAccessor;
 import dev.nonvocal.addon.Addon;
 import dev.nonvocal.addon.AddonBundle;
 import dev.nonvocal.addon.AddonCollection;
-import dev.nonvocal.addon.AddonCollector;
 import dev.nonvocal.util.CollectionUtils;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -28,12 +27,12 @@ public class NavBarList extends JPanel
 
     private Map<String, AddonBundle> bundles;
     private MouseSelectionListener selectionListener = new MouseSelectionListener();
-//    private final AddonCollector.AddonCollection addons;
+    //    private final AddonCollector.AddonCollection addons;
     private final AddonCollection addons;
 
     private final ResourceAccessor resourceAccessor;
 
-//    public NavBarList(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
+    //    public NavBarList(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
     public NavBarList(AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
     {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -50,11 +49,11 @@ public class NavBarList extends JPanel
 
 
 //            for (int i = 0; i < 25; i++)
-                for (Addon domainAddon : domainAddons)
-                {
-                    AddonNavBarWidget addonNavBarWidget = new AddonNavBarWidget(resourceAccessor, domainAddon);
-                    this.add(addonNavBarWidget);
-                }
+            for (Addon domainAddon : domainAddons)
+            {
+                AddonNavBarWidget addonNavBarWidget = new AddonNavBarWidget(resourceAccessor, domainAddon);
+                this.add(addonNavBarWidget);
+            }
         }
 
         addMouseListener(selectionListener);
@@ -65,12 +64,22 @@ public class NavBarList extends JPanel
     {
         this.onAddon = r;
 
-        Component first = getComponent(0);
-        selectionListener.setSelectedColors(first);
-        selectionListener.selected = first;
+        var compCount = getComponentCount();
 
-        AddonNavBarWidget widget = (AddonNavBarWidget) first;
-        onAddon.accept(widget.addon());
+        if (compCount > 0)
+        {
+            for (int i = compCount; i > 0; i--)
+            {
+                Component first = getComponent(i);
+                if (first instanceof AddonNavBarWidget widget)
+                {
+                    selectionListener.setSelectedColors(widget);
+                    selectionListener.selected = widget;
+
+                    onAddon.accept(widget.addon());
+                }
+            }
+        }
     }
 
     public void addSelectBundle(Consumer<AddonBundle> r)
@@ -92,7 +101,7 @@ public class NavBarList extends JPanel
         updateUI();
     }
 
-//    private void buildPanel(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
+    //    private void buildPanel(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
     private void buildPanel(AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
     {
         for (String domain : addons.domains())
@@ -103,11 +112,11 @@ public class NavBarList extends JPanel
 
 
 //            for (int i = 0; i < 25; i++)
-                for (Addon domainAddon : domainAddons)
-                {
-                    AddonNavBarWidget addonNavBarWidget = new AddonNavBarWidget(resourceAccessor, domainAddon);
-                    this.add(addonNavBarWidget);
-                }
+            for (Addon domainAddon : domainAddons)
+            {
+                AddonNavBarWidget addonNavBarWidget = new AddonNavBarWidget(resourceAccessor, domainAddon);
+                this.add(addonNavBarWidget);
+            }
         }
     }
 
