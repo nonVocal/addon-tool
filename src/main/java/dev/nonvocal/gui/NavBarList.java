@@ -68,7 +68,7 @@ public class NavBarList extends JPanel
 
         if (compCount > 0)
         {
-            for (int i = compCount; i > 0; i--)
+            for (int i = 0; i < compCount; i++)
             {
                 Component first = getComponent(i);
                 if (first instanceof AddonNavBarWidget widget)
@@ -77,6 +77,8 @@ public class NavBarList extends JPanel
                     selectionListener.selected = widget;
 
                     onAddon.accept(widget.addon());
+
+                    break;
                 }
             }
         }
