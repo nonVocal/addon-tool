@@ -5,6 +5,7 @@ import dev.nonvocal.addon.Addon;
 import dev.nonvocal.addon.AddonBundle;
 import dev.nonvocal.addon.AddonCollection;
 import dev.nonvocal.util.CollectionUtils;
+import dev.nonvocal.util.Searchable;
 import org.eclipse.jdt.annotation.NonNull;
 
 import javax.swing.*;
@@ -18,7 +19,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class NavBarList extends JPanel
+public class NavBarList extends JPanel implements Searchable
 {
     private static final DefaultTreeCellRenderer forColors = new DefaultTreeCellRenderer();
 
@@ -89,17 +90,25 @@ public class NavBarList extends JPanel
         this.onBundle = r;
     }
 
-    public void filter(String filterText)
+    public void search(String searchTerm)
     {
         selectionListener.clearSelection();
         removeAll();
 
-        AddonCollection collection = new AddonCollection();
-        addons.bundles().flatMap(bundle -> bundle.addons().stream())
-                .filter(addon -> addon.name().toUpperCase().contains(filterText.toUpperCase()))
-                .forEach(a -> collection.addAddon(a.domain(), a));
+        if (searchTerm == null || searchTerm.isEmpty())
+        {
+            buildPanel(addons, resourceAccessor);
+        }
+        else
+        {
+            AddonCollection collection = new AddonCollection();
+            addons.bundles().flatMap(bundle -> bundle.addons().stream())
+                    .filter(addon -> addon.name().toUpperCase().contains(searchTerm.toUpperCase()))
+                    .forEach(a -> collection.addAddon(a.domain(), a));
 
-        buildPanel(collection, resourceAccessor);
+            buildPanel(collection, resourceAccessor);
+        }
+
         updateUI();
     }
 

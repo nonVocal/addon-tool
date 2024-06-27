@@ -11,8 +11,6 @@ import dev.nonvocal.gui.widget.Searchbar;
 import org.eclipse.jdt.annotation.NonNull;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
@@ -38,6 +36,7 @@ public class MainUI extends JFrame
         addons = addonCollector.collectAddons();
 
         add(new MainPanel(addons, service.getResourceAccessor()));
+        pack();
         setVisible(true);
 
     }
@@ -59,7 +58,7 @@ public class MainUI extends JFrame
         private final AddonCollection addons;
         //        private final NavBar navBar;
         private final NavBarList navBar;
-        private final DetailPanel detailPanel;
+        private final DetailPanel2 detailPanel;
 
         //        public MainPanel(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
         public MainPanel(AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
@@ -86,7 +85,7 @@ public class MainUI extends JFrame
 
             add(sidePanel, BorderLayout.WEST);
 
-            this.detailPanel = new DetailPanel();
+            this.detailPanel = new DetailPanel2();
             JScrollPane scrollingDetailPanel = new JScrollPane(detailPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                     JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             scrollingDetailPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -96,49 +95,7 @@ public class MainUI extends JFrame
             navBar.addSelectAddon(addon -> SwingUtilities.invokeLater(() -> detailPanel.updateContent(addon)));
             navBar.addSelectBundle(bundle -> SwingUtilities.invokeLater(() -> detailPanel.updateContent(bundle)));
 
-
-            searchbar.getDocument().addDocumentListener(new DocumentListener()
-            {
-                @Override
-                public void insertUpdate(DocumentEvent e)
-                {
-                    doIt();
-                }
-
-                @Override
-                public void removeUpdate(DocumentEvent e)
-                {
-                    doIt();
-                }
-
-                @Override
-                public void changedUpdate(DocumentEvent e)
-                {
-                    doIt();
-                }
-
-                void doIt()
-                {
-                    String searchText = searchbar.getText();
-                    if (searchText.isEmpty())
-                        navBar.filter("");
-                    else
-                        navBar.filter(searchText);
-                }
-            });
-
-//            System.out.println(Integer.toBinaryString(-33));
-//
-////            Color c = new Color(2, 20, -33);
-//            Color c = new Color(2, 20, 0b11011111);
-//            System.out.println(c.getRGB());
-//
-//            System.out.println(c.getRed());
-//            System.out.println(c.getGreen());
-//            System.out.println(c.getBlue());
-//
-//            navBar.setBackground(c);
-
+            searchbar.bindToSearch(navBar);
         }
     }
 
