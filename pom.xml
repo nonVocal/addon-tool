@@ -166,6 +166,8 @@
                         </Import-Package>
                         <Export-Package>
                         </Export-Package>
+                        <Embed-Dependency>commonmark</Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
                     </instructions>
                 </configuration>
             </plugin>
