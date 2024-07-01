@@ -160,6 +160,7 @@
                         <Bundle-Name>${project.groupId}.${project.artifactId}</Bundle-Name>
                         <Private-Package>dev.nonvocal.*</Private-Package>
                         <PLM-BundleActivationStage>PRE_LOGON</PLM-BundleActivationStage>
+                        <Bundle-Activator>dev.nonvocal.Activator</Bundle-Activator>
                         <Import-Package>
                             com.dscsag.plm.spi.interfaces.*,
                             *
