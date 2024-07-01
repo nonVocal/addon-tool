@@ -11,8 +11,11 @@ import org.eclipse.jdt.annotation.NonNull;
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -34,28 +37,19 @@ public class NavBarList extends JPanel implements Searchable
     private final ResourceAccessor resourceAccessor;
 
     //    public NavBarList(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
+
+    BoxLayout mgr;
     public NavBarList(AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
     {
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        BoxLayout mgr = new BoxLayout(this, BoxLayout.Y_AXIS);
+        this.setLayout(mgr);
+
+
         this.addons = addons;
         this.resourceAccessor = resourceAccessor;
 
         bundles = addons.bundles().collect(Collectors.toMap(AddonBundle::domain, Function.identity()));
-
-        for (String domain : addons.domains())
-        {
-            Collection<Addon> domainAddons = addons.get(domain);
-            if (CollectionUtils.hasNoItems(domainAddons))
-                continue;
-
-
-//            for (int i = 0; i < 25; i++)
-            for (Addon domainAddon : domainAddons)
-            {
-                AddonNavBarWidget addonNavBarWidget = new AddonNavBarWidget(resourceAccessor, domainAddon);
-                this.add(addonNavBarWidget);
-            }
-        }
+        buildPanel0(addons, resourceAccessor);
 
         addMouseListener(selectionListener);
 
@@ -113,6 +107,39 @@ public class NavBarList extends JPanel implements Searchable
     }
 
     //    private void buildPanel(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
+    int maxWidgetWidth = 0;
+    private void buildPanel0(AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
+    {
+        java.util.List<AddonNavBarWidget> widgets = new ArrayList<>();
+        int maxWidth = 0;
+
+        for (String domain : addons.domains())
+        {
+            Collection<Addon> domainAddons = addons.get(domain);
+            if (CollectionUtils.hasNoItems(domainAddons))
+                continue;
+
+            for (Addon domainAddon : domainAddons)
+            {
+                AddonNavBarWidget addonNavBarWidget = new AddonNavBarWidget(resourceAccessor, domainAddon);
+                maxWidth = Math.max(maxWidth, addonNavBarWidget.getPreferredSize().width);
+                widgets.add(addonNavBarWidget);
+            }
+        }
+
+        maxWidgetWidth = maxWidth;
+
+        for (AddonNavBarWidget w : widgets)
+        {
+            Dimension size = new Dimension(maxWidth, w.getPreferredSize().height);
+            w.setPreferredSize(size);
+            w.setMinimumSize(size);
+            w.setMaximumSize(size);
+            w.setSize(size);
+            this.add(w);
+        }
+    }
+
     private void buildPanel(AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
     {
         for (String domain : addons.domains())
@@ -121,11 +148,14 @@ public class NavBarList extends JPanel implements Searchable
             if (CollectionUtils.hasNoItems(domainAddons))
                 continue;
 
-
-//            for (int i = 0; i < 25; i++)
             for (Addon domainAddon : domainAddons)
             {
                 AddonNavBarWidget addonNavBarWidget = new AddonNavBarWidget(resourceAccessor, domainAddon);
+                Dimension size = new Dimension(maxWidgetWidth, addonNavBarWidget.getPreferredSize().height);
+                addonNavBarWidget.setPreferredSize(size);
+                addonNavBarWidget.setMinimumSize(size);
+                addonNavBarWidget.setMaximumSize(size);
+                addonNavBarWidget.setSize(size);
                 this.add(addonNavBarWidget);
             }
         }
@@ -210,5 +240,42 @@ public class NavBarList extends JPanel implements Searchable
                 selected = null;
             }
         }
+    }
+
+
+    private class KeyNavigator implements KeyListener
+    {
+
+        @Override
+        public void keyTyped(KeyEvent e)
+        {
+            switch (e.getKeyChar())
+            {
+                case KeyEvent.VK_UP -> {
+
+                }
+                case KeyEvent.VK_DOWN ->
+                {
+
+                }
+            }
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e)
+        {
+
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e)
+        {
+
+        }
+    }
+
+    private class SelectionModel
+    {
+
     }
 }
