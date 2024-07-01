@@ -24,7 +24,23 @@ import java.util.stream.Collectors;
 
 public class NavBarList extends JPanel implements Searchable
 {
-    private static final DefaultTreeCellRenderer forColors = new DefaultTreeCellRenderer();
+//        private static final Color listSelectionBackground = UIManager.getColor("List.selectionBackground");
+
+    private static final Color selectionInactiveForeground =UIManager.getColor("Tree.selectionInactiveForeground");
+    private static final Color selectionInactiveBackground =UIManager.getColor("Tree.selectionInactiveBackground");
+//    private static final Color dropCellForeground =UIManager.getColor("Tree.dropCellForeground");
+//    private static final Color background =UIManager.getColor("Tree.background");
+    private static final Color background =UIManager.getColor("Panel.background");
+//    private static final Color textBackground =UIManager.getColor("Tree.textBackground");
+//    private static final Color rendererFallBackground =UIManager.getColor("Tree.rendererFillBackground");
+//    private static final Color dropCellBackground =UIManager.getColor("Tree.dropCellBackground");
+    private static final Color foreground =UIManager.getColor("Tree.foreground");
+    private static final Color selectionForeground =UIManager.getColor("Tree.selectionForeground");
+//    private static final Color textForeground =UIManager.getColor("Tree.textForeground");
+    private static final Color selectionBackground =UIManager.getColor("Tree.selectionBackground");
+    private static final Color inactiveForeground = UIManager.getColor("Label.disabledForeground");
+
+
 
     private Consumer<Addon> onAddon;
     private Consumer<AddonBundle> onBundle;
@@ -39,6 +55,7 @@ public class NavBarList extends JPanel implements Searchable
     //    public NavBarList(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
 
     BoxLayout mgr;
+
     public NavBarList(AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
     {
         BoxLayout mgr = new BoxLayout(this, BoxLayout.Y_AXIS);
@@ -108,6 +125,7 @@ public class NavBarList extends JPanel implements Searchable
 
     //    private void buildPanel(AddonCollector.AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
     int maxWidgetWidth = 0;
+
     private void buildPanel0(AddonCollection addons, @NonNull ResourceAccessor resourceAccessor)
     {
         java.util.List<AddonNavBarWidget> widgets = new ArrayList<>();
@@ -176,10 +194,12 @@ public class NavBarList extends JPanel implements Searchable
                     if (onAddon != null)
                         onAddon.accept(addon.addon());
 
-                    if (selected != null)
-                        setNonSelectedColors(selected);
+                    boolean addonEnabled = addon.addon().enabled();
 
-                    setSelectedColors(componentAt);
+                    if (selected != null)
+                        setNonSelectedColors(selected, addonEnabled);
+
+                    setSelectedColors(componentAt, addonEnabled);
                     selected = componentAt;
 
                 }
@@ -198,29 +218,56 @@ public class NavBarList extends JPanel implements Searchable
             }
         }
 
-        void setNonSelectedColors(Component c)
+        void setNonSelectedColors(Component c, boolean active)
         {
-            var nonSelectionBackground = UIManager.getColor("Panel.background");
-            var nonSelectionTextColor = forColors.getTextNonSelectionColor();
+            Color fg = active ? foreground : inactiveForeground;
 
-            c.setForeground(nonSelectionTextColor);
+            c.setForeground(fg);
 
             if (c instanceof JLabel)
             {
                 Graphics graphics = c.getGraphics();
-                graphics.setColor(nonSelectionBackground);
+                graphics.setColor(background);
                 graphics.drawRect(c.getX(), c.getY(), c.getWidth(), c.getHeight());
             }
             else
-                c.setBackground(nonSelectionBackground);
+                c.setBackground(background);
+        }
+
+        void setSelectedColors(Component c, boolean active)
+        {
+            Color fg = active ? selectionForeground : selectionInactiveForeground;
+            Color bg  = active ? selectionBackground : selectionInactiveBackground;
+
+            c.setForeground(fg);
+
+            if (c instanceof JLabel)
+            {
+                Graphics graphics = c.getGraphics();
+                graphics.setColor(bg);
+                graphics.drawRect(c.getX(), c.getY(), c.getWidth(), c.getHeight());
+            }
+            else
+                c.setBackground(bg);
+        }
+
+        void setNonSelectedColors(Component c)
+        {
+            c.setForeground(foreground);
+
+            if (c instanceof JLabel)
+            {
+                Graphics graphics = c.getGraphics();
+                graphics.setColor(background);
+                graphics.drawRect(c.getX(), c.getY(), c.getWidth(), c.getHeight());
+            }
+            else
+                c.setBackground(background);
         }
 
         void setSelectedColors(Component c)
         {
-            var selectionBackground = forColors.getBackgroundSelectionColor();
-            var selectionTextColor = forColors.getTextSelectionColor();
-
-            c.setForeground(selectionTextColor);
+            c.setForeground(selectionForeground);
 
             if (c instanceof JLabel)
             {
@@ -251,7 +298,8 @@ public class NavBarList extends JPanel implements Searchable
         {
             switch (e.getKeyChar())
             {
-                case KeyEvent.VK_UP -> {
+                case KeyEvent.VK_UP ->
+                {
 
                 }
                 case KeyEvent.VK_DOWN ->
