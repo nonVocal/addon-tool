@@ -9,6 +9,7 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
+import java.nio.file.Path;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -45,8 +46,10 @@ public class Activator implements BundleActivator
         public void handleEvent(Event event)
         {
             String topic = event.getTopic();
-            if (topic.equals(NotificationEventConstants.CONFIGURATION_CHANGED) || topic.equals(NotificationEventConstants.CONFIGURATION_CHANGED_PATH))
+            if (topic.equals(NotificationEventConstants.CONFIGURATION_CHANGED))
             {
+                Path newConfigPath = (Path) event.getProperty(NotificationEventConstants.CONFIGURATION_CHANGED_PATH);
+
                 Capabilities.usable = false;
             }
         }
