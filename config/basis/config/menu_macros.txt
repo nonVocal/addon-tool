@@ -1,0 +1,1 @@
+? nonvocal-addon-tool--om.file.menu = fnc.edit.addons

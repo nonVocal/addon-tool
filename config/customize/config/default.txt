@@ -1,1 +1,0 @@
-dev.nonvocal.addon.tool.config.edit.application = code

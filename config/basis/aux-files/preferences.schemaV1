@@ -4,7 +4,8 @@
         {
             "name" : "config.edit.application",
             "type" : "string",
-            "description" : "Application to edit"
+            "description" : "Application to edit",
+            "defaultValue" : "code"
         }
     ]
 }
